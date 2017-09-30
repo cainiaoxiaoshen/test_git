@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gooseeker.fss.mapper.DocCheckMapper">
+	
+
+	<insert id="saveOrUpdate" parameterType="docCheck">
+		INSERT INTO `annotate_check`
+		(
+			`docId`, `antId`, `createUser`, `createTime`,
+			`operation`, `description`, `grade`
+		)
+		 VALUES
+		(
+			#{docId}, #{antId}, #{createUser}, #{createTime},
+			#{operation}, #{description}, #{grade}
+		)
+		ON DUPLICATE KEY UPDATE `description` = CONCAT(IFNULL(`description`, ''), #{description})
+	</insert>
+	
+	<insert id="saveOrUpdates" parameterType="list">
+		<foreach collection="list" item="item" separator=";">
+			INSERT INTO `annotate_check`
+			(
+				`docId`, `antId`, `createUser`, `createTime`,
+				`operation`, `description`, `grade`
+			)
+			 VALUES
+			(
+				#{item.docId}, #{item.antId}, #{item.createUser}, #{item.createTime},
+				#{item.operation}, #{item.description}, #{item.grade}
+			)
+			ON DUPLICATE KEY UPDATE `description` = CONCAT(IFNULL(`description`, ''), #{item.description})
+		</foreach>
+	</insert>
+	
+	<delete id="deleteByPrimaryKey">
+		DELETE FROM `annotate_check` WHERE `id` = #{id}
+	</delete>
+	
+	<select id="selectByPrimaryKey">
+		SELECT
+			`id`, `docId`, `antId`, `createUser`,
+			`createTime`, `operation`, `description`, `grade`
+		FROM 
+			`annotate_check` WHERE `id` = #{id}
+	</select>
+	
+	<update id="update" parameterType="docCheck">
+		UPDATE `annotate_check`
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="docId != null">
+				`docId` = #{docId},
+			</if>
+			<if test="antId != null">
+				`antId` = #{antId},
+			</if>
+			<if test="createUser != null">
+				`createUser` = #{createUser},
+			</if>
+			
+			<if test="createTime != null">
+				`createTime` = #{createTime},
+			</if>
+			<if test="operation != null">
+				`operation` = #{operation},
+			</if>
+			<if test="description != null">
+				`description` = #{description},
+			</if>
+			<if test="grade != null">
+				`grade` = #{grade},
+			</if>
+		</trim>
+		WHERE `id` = #{id}
+	</update>
+	
+	<select id="selectByWhereSql" parameterType="map" resultType="docCheck">
+		SELECT
+			`id`, `docId`, `antId`, `createUser`,
+			`createTime`, `operation`, `description`, `grade`
+		FROM 
+			`annotate_check`
+		${whereSql} ${orderBySql}
+	</select>
+	
+</mapper>

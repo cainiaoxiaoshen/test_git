@@ -1,0 +1,511 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gooseeker.fss.mapper.AnnotateDocumentMapper">
+	
+	<sql id="Base_Column_List">
+		`id` AS `id`, `createUser` AS `createUser`, `createTime` AS `createTime`,
+		`modiUser` AS `modiUser`, `modiTime` AS `modiTime`, `type` AS `type`,
+		`fileName` AS `fileName`, `reqUrl` AS `reqUrl`, `format` AS `format`,
+		`docName` AS `docName`, `proSystem` AS `proSystem`,
+		`language` AS `language`, `country` AS `country`, `pubTime` AS `pubTime`,
+		`impTime` AS `impTime`, `description` AS `description`, `replace` AS `replace`, 
+		`tagState` AS `tagState`, `annotateUser` AS `annotateUser`,
+		`firstCheckUser` AS `firstCheckUser`, `secondCheckUser` AS `secondCheckUser` , 
+		`keyWord` AS `keyWord`, `version` AS `version`, `standardNo` AS `standardNo`
+		
+	</sql>
+	
+	<!-- 
+		单条插入 version一定要设置值默认为null
+		注意:
+		annotateUser、firstCheckUser、secondCheckUser这三个属性不要判断为''
+		因为默认值就是''
+	-->
+	<insert id="saveOrUpdate" parameterType="annotateDocument">
+		INSERT INTO `annotate_doc`
+		(
+			`createUser`, `createTime`,
+			`modiUser`, `modiTime`, `type`,
+			`fileName`, `reqUrl`, `format`,
+			`docName`, `proSystem`,
+			`language`, `country`, `pubTime`,
+			`impTime`, `description`, `replace`, 
+			`tagState`, `annotateUser`,
+			`firstCheckUser` , `secondCheckUser`,
+			`keyWord`, `version`, `standardNo`
+		) VALUES
+		(	#{createUser}, #{createTime}, 
+			#{modiUser}, #{modiTime}, #{type},
+			#{fileName}, #{reqUrl}, #{format},
+			#{docName}, #{proSystem},
+			#{language}, #{country}, #{pubTime},
+			#{impTime}, #{description}, #{replace},
+			#{tagState}, #{annotateUser},
+			#{firstCheckUser} , #{secondCheckUser},
+			#{keyWord}, #{version}, #{standardNo}
+		)
+		ON DUPLICATE KEY UPDATE
+			<if test="createUser != null">
+				`createUser` = #{createUser},
+			</if>
+			<if test="createTime != null">
+				`createTime` = #{createTime},
+			</if>
+			<if test="modiUser != null">
+				`modiUser` = #{modiUser},
+			</if>
+			<if test="modiTime != null">
+				`modiTime` = #{modiTime},
+			</if>
+			<if test="type != null">
+				`type` = #{type},
+			</if>
+			<if test="fileName != null">
+				`fileName` = #{fileName},
+			</if>
+			<if test="reqUrl != null">
+				`reqUrl` = #{reqUrl},
+			</if>
+			<if test="format != null">
+				`format` = #{format},
+			</if>
+			<if test="docName != null">
+				`docName` = #{docName},
+			</if>
+			<if test="proSystem != null">
+				`proSystem` = #{proSystem},
+			</if>
+			<if test="language != null">
+				`language` = #{language},
+			</if>
+			<if test="country != null">
+				`country` = #{country},
+			</if>
+			<if test="pubTime != null">
+				`pubTime` = #{pubTime},
+			</if>
+			<if test="impTime != null">
+				`impTime` = #{impTime},
+			</if>
+			<if test="description != null">
+				`description` = #{description},
+			</if>
+			<if test="replace != null">
+				`replace` = #{replace},
+			</if>
+			<if test="tagState != null">
+				`tagState` = #{tagState},
+			</if>
+			<if test="annotateUser != null">
+				`annotateUser` = #{annotateUser},
+			</if>
+			<if test="firstCheckUser != null">
+				`firstCheckUser` = #{firstCheckUser},
+			</if>
+			<if test="secondCheckUser != null">
+				`secondCheckUser` = #{secondCheckUser},
+			</if>
+			<if test="keyWord != null">
+				`keyWord` = #{keyWord},
+			</if>
+			<if test="standardNo != null">
+				`standardNo` = #{standardNo},
+			</if>
+			`version` = #{version}
+	</insert>
+	
+	<!-- 单条插入 version一定要设置值默认为null
+		注意:
+		annotateUser、firstCheckUser、secondCheckUser这三个属性不要判断为''
+		因为默认值就是''
+	-->
+	<insert id="saveOrUpdates" parameterType="list">
+		<foreach collection="list" item="item" separator=";">
+			INSERT INTO `annotate_doc`
+			(
+				`createUser`, `createTime`,
+				`modiUser`, `modiTime`, `type`,
+				`fileName`, `reqUrl`, `format`,
+				`docName`, `proSystem`,
+				`language`, `country`, `pubTime`,
+				`impTime`, `description`, `replace`, 
+				`tagState`, `annotateUser`,
+				`firstCheckUser` , `secondCheckUser`,
+				`keyWord`, `version`, `standardNo`
+			) VALUES
+			(	#{item.createUser}, #{item.createTime}, 
+				#{item.modiUser}, #{item.modiTime}, #{item.type},
+				#{item.fileName}, #{item.reqUrl}, #{item.format},
+				#{item.docName}, #{item.proSystem},
+				#{item.language}, #{item.country}, #{item.pubTime},
+				#{item.impTime}, #{item.description}, #{item.replace},
+				#{item.tagState}, #{item.annotateUser},
+				#{item.firstCheckUser} , #{item.secondCheckUser},
+				#{item.keyWord}, #{item.version}, #{item.standardNo}
+			)
+			ON DUPLICATE KEY UPDATE
+			<if test="item.createUser != null">
+				`createUser` = #{item.createUser},
+			</if>
+			<if test="item.createTime != null">
+				`createTime` = #{item.createTime},
+			</if>
+			<if test="item.modiUser != null">
+				`modiUser` = #{item.modiUser},
+			</if>
+			<if test="item.modiTime != null">
+				`modiTime` = #{item.modiTime},
+			</if>
+			<if test="item.type != null">
+				`type` = #{item.type},
+			</if>
+			<if test="item.fileName != null">
+				`fileName` = #{item.fileName},
+			</if>
+			<if test="item.reqUrl != null">
+				`reqUrl` = #{item.reqUrl},
+			</if>
+			<if test="item.format != null">
+				`format` = #{item.format},
+			</if>
+			<if test="item.docName != null">
+				`docName` = #{item.docName},
+			</if>
+			<if test="item.proSystem != null">
+				`proSystem` = #{item.proSystem},
+			</if>
+			<if test="item.language != null">
+				`language` = #{item.language},
+			</if>
+			<if test="item.country != null">
+				`country` = #{item.country},
+			</if>
+			<if test="item.pubTime != null">
+				`pubTime` = #{item.pubTime},
+			</if>
+			<if test="item.impTime != null">
+				`impTime` = #{item.impTime},
+			</if>
+			<if test="item.description != null">
+				`description` = #{item.description},
+			</if>
+			<if test="item.replace != null">
+				`replace` = #{item.replace},
+			</if>
+			<if test="item.tagState != null">
+				`tagState` = #{item.tagState},
+			</if>
+			<if test="item.annotateUser != null">
+				`annotateUser` = #{item.annotateUser},
+			</if>
+			<if test="item.firstCheckUser != null">
+				`firstCheckUser` = #{item.firstCheckUser},
+			</if>
+			<if test="item.secondCheckUser != null">
+				`secondCheckUser` = #{item.secondCheckUser},
+			</if>
+			<if test="item.keyWord != null">
+				`keyWord` = #{item.keyWord},
+			</if>
+			<if test="item.standardNo != null">
+				`standardNo` = #{item.standardNo},
+			</if>
+			`version` = #{item.version}
+		</foreach>
+	</insert>
+	
+	<!--更新条件
+		1、如果id存在以id作为条件
+		2、如果id不存在则以standardNo作为条件
+		3、如果id和standardNo都不存在
+		在这种情况下根据我们sql语句可得出最后的条件为WHERE standardNo = null则不会更新
+		注意:
+		annotateUser、firstCheckUser、secondCheckUser这三个属性不要判断为''
+		因为默认值就是''
+	 -->
+	<update id="updates" parameterType="list">
+		<foreach collection="list" item="item" separator=";">
+			UPDATE `annotate_doc`
+			<trim prefix="SET" suffixOverrides=",">
+				<if test="item.modiUser != null">
+					`modiUser` = #{item.modiUser},
+				</if>
+				<if test="item.modiTime != null">
+					`modiTime` = #{item.modiTime},
+				</if>
+				<if test="item.createUser != null">
+					`createUser` = #{item.createUser},
+				</if>
+				<if test="item.createTime != null">
+					`createTime` = #{item.createTime},
+				</if>
+				<if test="item.type != null">
+					`type` = #{item.type},
+				</if>
+				<if test="item.fileName != null">
+					`fileName` = #{item.fileName},
+				</if>
+				<if test="item.format != null">
+					`format` = #{item.format},
+				</if>
+				<if test="item.docName != null">
+					`docName` = #{item.docName},
+				</if>
+				<if test="item.proSystem != null">
+					`proSystem` = #{item.proSystem},
+				</if>
+				<if test="item.language != null">
+					`language` = #{item.language},
+				</if>
+				<if test="item.country != null">
+					`country` = #{item.country},
+				</if>
+				<if test="item.pubTime != null">
+					`pubTime` = #{item.pubTime},
+				</if>
+				<if test="item.impTime != null">
+					`impTime` = #{item.impTime},
+				</if>
+				<if test="item.description != null">
+					`description` = #{item.description},
+				</if>
+				<if test="item.replace != null">
+					`replace` = #{item.replace},
+				</if>
+				<if test="item.tagState != null">
+					`tagState` = #{item.tagState},
+				</if>
+				<if test="item.annotateUser != null">
+					`annotateUser` = #{item.annotateUser},
+				</if>
+				<if test="item.firstCheckUser != null">
+					`firstCheckUser` = #{item.firstCheckUser},
+				</if>
+				<if test="item.secondCheckUser != null">
+					`secondCheckUser` = #{item.secondCheckUser},
+				</if>
+				<if test="item.keyWord != null">
+					`keyWord` = #{item.keyWord},
+				</if>
+				<if test="item.version != null">
+					`version` = #{item.version},
+				</if>
+				<if test="item.standardNo != null">
+					`standardNo` = #{item.standardNo}
+				</if>
+			</trim>
+			<if test="item.id != null">
+				WHERE `id` = #{item.id}
+			</if>
+			<if test="item.id == null">
+				WHERE `standardNo` = #{item.standardNo}
+			</if>
+		</foreach>
+	</update>
+	
+	<update id="update" parameterType="annotateDocument">
+		UPDATE `annotate_doc`
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="modiUser != null">
+				`modiUser` = #{modiUser},
+			</if>
+			<if test="modiTime != null">
+				`modiTime` = #{modiTime},
+			</if>
+			<if test="createUser != null">
+				`createUser` = #{createUser},
+			</if>
+			<if test="createTime != null">
+				`createTime` = #{createTime},
+			</if>
+			<if test="type != null">
+				`type` = #{type},
+			</if>
+			<if test="fileName != null">
+				`fileName` = #{fileName},
+			</if>
+			<if test="format != null">
+				`format` = #{format},
+			</if>
+			<if test="docName != null">
+				`docName` = #{docName},
+			</if>
+			<if test="proSystem != null">
+				`proSystem` = #{proSystem},
+			</if>
+			<if test="language != null">
+				`language` = #{language},
+			</if>
+			<if test="country != null">
+				`country` = #{country},
+			</if>
+			<if test="pubTime != null">
+				`pubTime` = #{pubTime},
+			</if>
+			<if test="impTime != null">
+				`impTime` = #{impTime},
+			</if>
+			<if test="description != null">
+				`description` = #{description},
+			</if>
+			<if test="replace != null">
+				`replace` = #{replace},
+			</if>
+			<if test="tagState != null">
+				`tagState` = #{tagState},
+			</if>
+			<if test="annotateUser != null">
+				`annotateUser` = #{annotateUser},
+			</if>
+			<if test="firstCheckUser != null">
+				`firstCheckUser` = #{firstCheckUser},
+			</if>
+			<if test="secondCheckUser != null">
+				`secondCheckUser` = #{secondCheckUser},
+			</if>
+			<if test="keyWord != null">
+				`keyWord` = #{keyWord},
+			</if>
+			<if test="version != null">
+				`version` = #{version},
+			</if>
+			<if test="standardNo != null">
+				`standardNo` = #{standardNo}
+			</if>
+		</trim>
+		<if test="id != null">
+			WHERE `id` = #{id}
+		</if>
+		<if test="id == null">
+			WHERE `standardNo` = #{standardNo}
+		</if>
+	</update>
+	
+	<!-- test -->
+	<select id="selectByWhereSql" resultType="annotateDocument" parameterType="map">
+		SELECT <include refid="Base_Column_List"></include> FROM `annotate_doc` ${whereSql} ${orderBySql}
+	</select>
+	<!-- test end -->
+	
+	
+	<!-- 
+	<select id="findByQueryCondition" resultType="annotateDocument" parameterType="com.gooseeker.fss.container.QueryConditionContainer">
+		SELECT <include refid="Base_Column_List"></include> FROM `annotate_doc`
+		<where>
+			<if test="tagState != null">
+				AND `tagState` = #{tagState} 
+			</if>
+			<if test="type != null">
+				AND `type` = #{type} 
+			</if>
+			<if test="country != null">
+				AND `country` = #{country} 
+			</if>
+			<if test="roleLv == 'ANNOTATE'">
+				AND `annotateUser` = #{user} 
+			</if>
+			<if test="roleLv == 'CHECK'">
+				AND
+				(
+					`firstCheckUser` = #{user}
+					OR `secondCheckUser` = #{user}
+				)
+			</if>
+			
+			<if test="roleLv == 'ANNOTATECHECK'">
+				AND 
+				(
+					`annotateUser` = #{user}
+					OR `firstCheckUser` = #{user}
+					OR `secondCheckUser` = #{user}
+				)
+			</if>
+		</where>
+		ORDER BY `tagState` ASC, `createTime` DESC
+	</select>
+	 -->
+	
+	<select id="getMarkProgress" parameterType="com.gooseeker.fss.entity.vo.MarkProgressVo" statementType="CALLABLE">
+		{CALL markprogress(#{total, mode=OUT, jdbcType=INTEGER},
+							#{tagStartCount, mode=OUT, jdbcType=INTEGER},
+							#{tagActionCount, mode=OUT, jdbcType=INTEGER},
+							#{firstCheckCount, mode=OUT, jdbcType=INTEGER},
+							#{secondCheckCount, mode=OUT, jdbcType=INTEGER},
+							#{finishCount, mode=OUT, jdbcType=INTEGER})}
+	</select>
+	
+	<!--
+		<select id="selectByReqUrl" parameterType="String" resultType="annotateDocument">
+			SELECT <include refid="Base_Column_List"></include>
+			FROM `annotate_doc` WHERE `reqUrl` = #{reqUrl}
+		</select>
+	
+	<select id="selectByStandardNo" parameterType="String" resultType="annotateDocument">
+		SELECT <include refid="Base_Column_List"></include>
+		FROM `annotate_doc` WHERE `standardNo` = #{standardNo}
+	</select>
+	
+	
+	<select id="findNoAssignmentDoc" parameterType="map" resultType="annotateDocument">
+		SELECT <include refid="Base_Column_List"></include> FROM `annotate_doc`
+		WHERE `annotateUser` = '' AND `firstCheckUser` = '' AND `secondCheckUser` = ''
+		<if test="country != null and country != ''">
+			AND `country` = #{country} 
+		</if>
+		<if test="input != null and input != ''">
+			AND 
+			(
+				`standardNo` LIKE #{input}
+				OR `docName` LIKE #{input}
+			)
+		</if>
+		LIMIT #{startNum}, #{limit}
+	</select>
+	
+	<select id="findNoAssignmentDocTotal" parameterType="map" resultType="int">
+		SELECT COUNT(*) FROM (
+			SELECT <include refid="Base_Column_List"></include> FROM `annotate_doc`
+			WHERE `annotateUser` = '' AND `firstCheckUser` = '' AND `secondCheckUser` = ''
+			<if test="country != null and country != ''">
+				AND `country` = #{country} 
+			</if>
+			<if test="input != null and input != ''">
+				AND 
+				(
+					`standardNo` LIKE #{input}
+					OR `docName` LIKE #{input}
+				)
+			</if>
+		) noagmtDoc
+	</select>
+	-->
+	<select id="selectByPrimaryKey" parameterType="long" resultType="annotateDocument">
+		SELECT <include refid="Base_Column_List"></include> FROM `annotate_doc`
+		WHERE `id` = #{id}
+	</select>
+	
+	<delete id="deleteByPrimaryKeys" parameterType="list">
+		DELETE FROM `annotate_doc` WHERE `id` IN
+		<foreach item="id" collection="list" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+	
+	<delete id="deleteByPrimaryKey" parameterType="long">
+		DELETE FROM `annotate_doc` WHERE `id` = #{id}
+	</delete>
+	
+	<!--
+	<select id="findSynchronousDoc" resultType="annotateDocument">
+		SELECT <include refid="Base_Column_List"></include> FROM `annotate_doc`
+		WHERE `tagState` != 5
+	</select>
+	-->
+	
+	<update id="updateDocVersion" parameterType="map">
+		UPDATE `annotate_doc` SET `version` = #{version} WHERE `id` IN
+		<foreach collection="list" item="doc" open="(" separator="," close=")">
+			#{doc.id}
+		</foreach>
+	</update>
+</mapper>

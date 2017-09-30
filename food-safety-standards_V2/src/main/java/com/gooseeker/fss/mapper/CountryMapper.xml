@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gooseeker.fss.mapper.CountryMapper">
+	
+	<select id="findAll" parameterType="String" resultType="country">
+		SELECT
+			`id` `id`, `country` `country`
+		FROM 
+			`country` ORDER BY `id`
+	</select>
+	
+	<insert id="insertModel" parameterType="country">
+		INSERT INTO `country` (`country`) VALUES (#{country})
+		ON DUPLICATE KEY UPDATE `country` = `country`
+	</insert>
+	
+</mapper>

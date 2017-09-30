@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gooseeker.fss.mapper.UserMapper">
+
+
+	<resultMap id="BaseResultMap" type="com.gooseeker.fss.entity.MyUser">
+		<id column="USER_ID" property="id" />
+		<result column="NAME" property="name" />
+		<result column="PASSWORD" property="password" />
+		<result column="EMAIL" property="email" />
+		<result column="LOCKED" property="locked" />
+		<result column="ENABLED" property="enabled" />
+		<result column="EXPIRATION" property="expiration" />
+		<result column="CREATEDATE" property="createDate" />
+	</resultMap>
+
+	<sql id="Example_Where_Clause">
+		<where>
+			<foreach collection="oredCriteria" item="criteria" separator="or">
+				<if test="criteria.valid">
+					<trim prefix="(" suffix=")" prefixOverrides="and">
+						<foreach collection="criteria.criteria" item="criterion">
+							<choose>
+								<when test="criterion.noValue">
+									and ${criterion.condition}
+								</when>
+								<when test="criterion.singleValue">
+									and ${criterion.condition} #{criterion.value}
+								</when>
+								<when test="criterion.betweenValue">
+									and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+								</when>
+								<when test="criterion.listValue">
+									and ${criterion.condition}
+									<foreach collection="criterion.value" item="listItem" open="(" close=")" separator=",">
+										#{listItem}
+									</foreach>
+								</when>
+							</choose>
+						</foreach>
+					</trim>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+
+	<sql id="Update_By_Example_Where_Clause">
+		<where>
+			<foreach collection="example.oredCriteria" item="criteria" separator="or">
+				<if test="criteria.valid">
+					<trim prefix="(" suffix=")" prefixOverrides="and">
+						<foreach collection="criteria.criteria" item="criterion">
+							<choose>
+								<when test="criterion.noValue">
+									and ${criterion.condition}
+								</when>
+								<when test="criterion.singleValue">
+									and ${criterion.condition} #{criterion.value}
+								</when>
+								<when test="criterion.betweenValue">
+									and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+								</when>
+								<when test="criterion.listValue">
+									and ${criterion.condition}
+									<foreach collection="criterion.value" item="listItem" open="(" close=")" separator=",">
+										#{listItem}
+									</foreach>
+								</when>
+							</choose>
+						</foreach>
+					</trim>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+
+	<sql id="Base_Column_List">
+		`USER_ID` id, `NAME` name, `PASSWORD` password, `EMAIL` email,
+		`LOCKED` locked, `ENABLED` enabled, `EXPIRATION` expiration, `CREATEDATE` createDate
+	</sql>
+
+	<select id="selectByExample" resultMap="BaseResultMap"
+		parameterType="com.gooseeker.fss.commons.mapper.common.SUserExample">
+		select
+		<if test="distinct">
+			distinct
+		</if>
+		<include refid="Base_Column_List" />
+		from `USER`
+		<if test="_parameter != null">
+			<include refid="Example_Where_Clause" />
+		</if>
+		<if test="orderByClause != null">
+			order by ${orderByClause}
+		</if>
+	</select>
+
+	<update id="updateByExampleSelective" parameterType="map">
+		update USER
+		<set>
+			<if test="record.id != null">
+				USER_ID = #{record.id},
+			</if>
+			<if test="record.name != null">
+				NAME = #{record.name},
+			</if>
+			<if test="record.password != null">
+				PASSWORD = #{record.password},
+			</if>
+			<if test="record.email != null">
+				EMAIL = #{record.email},
+			</if>
+			<if test="record.locked != null">
+				LOCKED = #{record.locked},
+			</if>
+			<if test="record.enabled != null">
+				ENABLED = #{record.enabled},
+			</if>
+			<if test="record.expiration != null">
+				EXPIRATION = #{record.expiration},
+			</if>
+			<if test="record.createDate != null">
+				CREATEDATE = #{record.createDate},
+			</if>
+		</set>
+		<if test="_parameter != null">
+			<include refid="Update_By_Example_Where_Clause" />
+		</if>
+	</update>
+	
+	<delete id="deleteByExample" parameterType="com.gooseeker.fss.entity.MyUser">
+		delete from USER
+		<if test="_parameter != null">
+			<include refid="Example_Where_Clause" />
+		</if>
+	</delete>
+
+<!--
+	<insert id="insert" parameterType="cn.itcast.ssm.po.Orderdetail">
+		insert into orderdetail (id, orders_id, items_id,
+		items_num)
+		values (#{id,jdbcType=INTEGER}, #{ordersId,jdbcType=INTEGER},
+		#{itemsId,jdbcType=INTEGER},
+		#{itemsNum,jdbcType=INTEGER})
+	</insert>
+	<insert id="insertSelective" parameterType="cn.itcast.ssm.po.Orderdetail">
+		insert into orderdetail
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="ordersId != null">
+				orders_id,
+			</if>
+			<if test="itemsId != null">
+				items_id,
+			</if>
+			<if test="itemsNum != null">
+				items_num,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="ordersId != null">
+				#{ordersId,jdbcType=INTEGER},
+			</if>
+			<if test="itemsId != null">
+				#{itemsId,jdbcType=INTEGER},
+			</if>
+			<if test="itemsNum != null">
+				#{itemsNum,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+-->
+	<insert id="saveOrUpdate" parameterType="com.gooseeker.fss.entity.MyUser">
+		INSERT INTO `USER`
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				`USER_ID`,
+			</if>
+			<if test="name != null">
+				`NAME`,
+			</if>
+			<if test="password != null">
+				`PASSWORD`,
+			</if>
+			<if test="email != null">
+				`EMAIL`,
+			</if>
+			<if test="locked != null">
+				`LOCKED`,
+			</if>
+			<if test="enabled != null">
+				`ENABLED`,
+			</if>
+			<if test="expiration != null">
+				`EXPIRATION`,
+			</if>
+			<if test="createDate != null">
+				`CREATEDATE`,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id},
+			</if>
+			<if test="name != null">
+				#{name},
+			</if>
+			<if test="password != null">
+				#{password},
+			</if>
+			<if test="email != null">
+				#{email},
+			</if>
+			<if test="locked != null">
+				#{locked},
+			</if>
+			<if test="enabled != null">
+				#{enabled},
+			</if>
+			<if test="expiration != null">
+				#{expiration},
+			</if>
+			<if test="createDate != null">
+				#{createDate},
+			</if>
+		</trim>
+		
+		<trim prefix="ON DUPLICATE KEY UPDATE" suffixOverrides=",">
+			<if test="name != null">
+				`NAME` = #{name},
+			</if>
+			<if test="password != null">
+				`PASSWORD` = #{password},
+			</if>
+			<if test="email != null">
+				`EMAIL` = #{email},
+			</if>
+			<if test="locked != null">
+				`LOCKED` = #{locked},
+			</if>
+			<if test="enabled != null">
+				`ENABLED` = #{enabled},
+			</if>
+			<if test="expiration != null">
+				`EXPIRATION` = #{expiration},
+			</if>
+			<if test="createDate != null">
+				`CREATEDATE` = #{createDate},
+			</if>
+		</trim>
+	</insert>
+</mapper>

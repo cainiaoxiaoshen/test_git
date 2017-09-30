@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gooseeker.fss.mapper.AnnotateWordMapper">
+
+
+	<delete id="deleteByPrimaryKey" parameterType="long">
+		DELETE FROM `annotate_word` WHERE `id` = #{id}
+	</delete>
+	
+	<select id="selectByPrimaryKey" parameterType="long" resultType="annotateWord">
+		SELECT `id` id, `annotateWord` annotateWord, `version` version
+		FROM `annotate_word` WHERE `id` = #{id}
+	</select>
+	
+	<insert id="saveOrUpdate" parameterType="annotateWord">
+		INSERT INTO `annotate_word`(`annotateWord`, `version`) VALUES (#{word}, #{version})
+		ON DUPLICATE KEY UPDATE `annotateWord` = #{annotateWord}, `version` = #{version}
+	</insert>
+	
+	<insert id="addAnnotateWords">
+		<foreach collection="array" item="word" separator=";">
+			INSERT INTO `annotate_word`(`annotateWord`) VALUES (#{word})
+			ON DUPLICATE KEY UPDATE `annotateWord` = #{word}
+		</foreach>
+	</insert>
+	
+	<select id="selectByWhereSql" parameterType="map" resultType="annotateWord">
+		SELECT 
+			`id` id, `annotateWord` annotateWord, `version` version
+		FROM 
+			`annotate_word`
+		${whereSql} ${orderBySql}
+	</select>
+	
+	<update id="update" parameterType="annotateWord">
+		UPDATE `annotate_word` 
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="annotateWord != null">
+				`annotateWord` = #{annotateWord},
+			</if>
+			<if test="version != null">
+				`version` = #{version},
+			</if>
+		</trim>
+		WHERE `id` = #{id}
+	</update>
+
+	<update id="updateWordVersionIsNullTOVersion" parameterType="string">
+		UPDATE `annotate_word` SET `version` = #{version} WHERE `version` IS NULL
+	</update>
+	
+</mapper>

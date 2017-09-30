@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gooseeker.fss.mapper.MarkMonitorMapper">
+	
+	<sql id="Base_Column_List">
+		`id` AS `id`, `docName` AS `docName`, `type` AS `type`, `tagState` AS `tagState`,
+		`country` AS `country`, `annotateUser` AS `annotateUser`, `firstCheckUser` AS `firstCheckUser`,
+		`secondCheckUser` AS `secondCheckUser`, `standardNo` AS `standardNo`, `antNum` AS `antNum`,
+		`antChkNum` AS `antChkNum`, `checkRecordNum` AS `checkRecordNum`, `errorRate` AS `errorRate`
+	</sql>
+	
+	<select id="selectByWhereSql" resultType="markMonitor" parameterType="map">
+		SELECT <include refid="Base_Column_List"></include> FROM `markmonitor` ${whereSql} ${orderBySql}
+	</select>
+</mapper>

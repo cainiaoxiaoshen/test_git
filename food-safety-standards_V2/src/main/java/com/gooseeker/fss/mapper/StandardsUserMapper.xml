@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gooseeker.fss.mapper.StandardsUserMapper">
+	
+	<delete id="deleteByPrimaryKey" parameterType="long">
+		DELETE FROM `USER` WHERE `USER_ID` = #{id}
+	</delete>
+	
+	<select id="selectByPrimaryKey" parameterType="long" resultMap="findUserRoleResultMap">
+		SELECT
+			t_user.`USER_ID` id,
+			t_user.`NAME` NAME,
+			t_user.`PASSWORD` PASSWORD,
+			t_user.`EMAIL` email,
+			t_user.`LOCKED` locked,
+			t_user.`ENABLED` enabled,
+			t_user.`EXPIRATION` expiration,
+			t_user.`CREATEDATE` createDate,
+			t_authority.`ROLE` role
+		FROM
+			`USER` AS t_user
+		INNER JOIN `AUTHORITY` AS t_authority ON t_authority.`USER_ID` = t_user.`USER_ID`
+		WHERE
+			t_user.`USER_ID` = #{id}
+	</select>
+	
+	<resultMap type="com.gooseeker.fss.entity.StandardsUser" id="findUserRoleResultMap">
+		<id column="USER_ID" property="id"/>
+		<result column="NAME" property="name"/>
+		<result column="PASSWORD" property="password"/>
+		<result column="EMAIL" property="email"/>
+		<result column="LOCKED" property="locked"/>
+		<result column="ENABLED" property="enabled"/>
+		<result column="EXPIRATION" property="expiration"/>
+		<result column="CREATEDATE" property="createDate"/>
+		<collection property="authorities" ofType="com.gooseeker.fss.entity.Authority" column="USER_ID">
+			<id column="AUTHORITY_ID" property="id"/>
+			<result column="USER_ID" property="uid"/>
+			<result column="ROLE" property="role"/>
+		</collection>
+	</resultMap>
+	
+	<insert id="saveOrUpdate" parameterType="standardsUser">
+		<selectKey resultType="long" keyProperty="id" order="AFTER">
+			SELECT @@IDENTITY AS id
+		</selectKey>
+		INSERT INTO `USER` (`NAME`, `PASSWORD`, `EMAIL`, `LOCKED`, `ENABLED`, `EXPIRATION`, `CREATEDATE`)
+		VALUES (#{name}, #{password}, #{email}, #{locked}, #{enabled}, #{expiration}, #{createDate})
+		ON DUPLICATE KEY UPDATE
+		<trim suffixOverrides=",">
+			<if test="name != null">
+				`NAME` = #{name},
+			</if>
+			<if test="password != null">
+				`PASSWORD` = #{password},
+			</if>
+			<if test="email != null">
+				`EMAIL` = #{email},
+			</if>
+			<if test="locked != null">
+				`LOCKED` = #{locked},
+			</if>
+			<if test="enabled != null">
+				`ENABLED` = #{enabled},
+			</if>
+			<if test="expiration != null">
+				`EXPIRATION` = #{expiration},
+			</if>
+			<if test="createDate != null">
+				`CREATEDATE` = #{createDate},
+			</if>
+		</trim>
+	</insert>
+	
+	<update id="update" parameterType="standardsUser">
+		UPDATE `USER`
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="name != null">
+				`NAME` = #{name},
+			</if>
+			<if test="password != null">
+				`PASSWORD` = #{password},
+			</if>
+			<if test="email != null">
+				`EMAIL` = #{email},
+			</if>
+			
+			<if test="locked != null">
+				`LOCKED` = #{locked},
+			</if>
+			<if test="enabled != null">
+				`ENABLED` = #{enabled},
+			</if>
+			<if test="expiration != null">
+				`EXPIRATION` = #{expiration},
+			</if>
+			<if test="createDate != null">
+				`CREATEDATE` = #{createDate},
+			</if>
+		</trim>
+		WHERE `USER_ID` = #{id}
+	</update>
+	
+	<select id="selectByWhereSql" parameterType="map" resultMap="findUserRoleResultMap">
+		SELECT
+			t_user.`USER_ID` id,
+			t_user.`NAME` NAME,
+			t_user.`PASSWORD` PASSWORD,
+			t_user.`EMAIL` email,
+			t_user.`LOCKED` locked,
+			t_user.`ENABLED` enabled,
+			t_user.`EXPIRATION` expiration,
+			t_user.`CREATEDATE` createDate,
+			t_authority.`ROLE` role
+		FROM
+			`USER` AS t_user
+		INNER JOIN `AUTHORITY` AS t_authority ON t_authority.`USER_ID` = t_user.`USER_ID`
+		${whereSql} ${orderBySql}
+	</select>
+	
+	<resultMap type="com.gooseeker.fss.entity.vo.UserWorkTasksVo" id="userWorkResultMap">
+		<id column="id" property="id"/>
+		<result column="name" property="name"/>
+		<result column="password" property="password"/>
+		<result column="createDate" property="createDate"/>
+		<result column="roles" property="roles"/>
+		<association property="checkDocNum" javaType="int" column="name" select="selectCheckDocNum"></association>
+		<association property="annotateDocNum" javaType="int" column="name" select="selectAnnotateDocNum"></association>
+	</resultMap>
+	
+	<select id="findUserWorkTasks" resultMap="userWorkResultMap" parameterType="map">
+		SELECT
+			t_user.`USER_ID` `id`,
+			t_user.`NAME` `name`,
+			t_user.`PASSWORD` `password`,
+			t_user.`CREATEDATE` `createDate`,
+			(
+				CASE group_concat(t_authority.`ROLE`)
+				WHEN 'ROLE_ANNOTATE' THEN
+					'打标员'
+				WHEN 'ROLE_CHECK' THEN
+					'审核员'
+				WHEN 'ROLE_ADMIN' THEN
+					'管理员'
+				WHEN 'ROLE_ADMIN,ROLE_CHECK' THEN
+					'管理员，审核员'
+				WHEN 'ROLE_CHECK,ROLE_ADMIN' THEN
+					'管理员，审核员'
+				WHEN 'ROLE_ADMIN,ROLE_ANNOTATE' THEN
+					'管理员，打标员'
+				WHEN 'ROLE_ANNOTATE,ROLE_ADMIN' THEN
+					'管理员，打标员'
+				WHEN 'ROLE_ANNOTATE,ROLE_CHECK' THEN
+					'打标员，审核员'
+				WHEN 'ROLE_CHECK,ROLE_ANNOTATE' THEN
+					'打标员，审核员'
+				ELSE
+					'管理员，打标员，审核员'
+				END
+			) roles
+		FROM
+			`USER` t_user
+		INNER JOIN `AUTHORITY` t_authority ON t_user.`USER_ID` = t_authority.`USER_ID` 
+		${whereSql} GROUP BY t_user.`NAME` ${orderBySql}
+	</select>
+	
+	<select id="selectCheckDocNum" parameterType="String" resultType="int">
+		SELECT COUNT(*) FROM annotate_doc WHERE firstCheckUser = #{name} OR secondCheckUser = #{name}
+	</select>
+	
+	<select id="selectAnnotateDocNum" parameterType="String" resultType="int">
+		SELECT COUNT(*) FROM annotate_doc WHERE annotateUser = #{name}
+	</select>
+	
+	<!--
+	<select id="findPageUserWorkTasks" resultType="com.gooseeker.fss.entity.vo.UserWorkTasksVo" parameterType="map">
+		SELECT
+			u.USER_ID id,
+			u.`NAME` name,
+			u.`PASSWORD` password,
+			u.`CREATEDATE` createDate,
+			group_concat(aut.`ROLE`) roles,
+			taskDetails.checkDocNum checkDocNum,
+			taskDetails.annotateDocNum annotateDocNum
+		FROM
+			`USER` u
+		INNER JOIN `AUTHORITY` aut ON u.`USER_ID` = aut.`USER_ID`
+		LEFT JOIN (
+			SELECT
+				task.username,
+				SUM(task.checkNum) checkDocNum,
+				SUM(task.annotateNum) annotateDocNum
+			FROM
+				(
+					SELECT
+						doc.firstCheckUser username,
+						COUNT(*) checkNum,
+						0 annotateNum
+					FROM
+						`USER` u
+					INNER JOIN `annotate_doc` doc ON u.`NAME` = doc.firstCheckUser
+					GROUP BY
+						u.`NAME`
+					UNION ALL
+						SELECT
+							doc.secondCheckUser username,
+							COUNT(*) checkNum,
+							0 annotateNum
+						FROM
+							`USER` u
+						INNER JOIN `annotate_doc` doc ON u.`NAME` = doc.secondCheckUser
+						GROUP BY
+							u.`NAME`
+						UNION ALL
+							SELECT
+								doc.annotateUser username,
+								0 checkNum,
+								COUNT(*) annotateNum
+							FROM
+								`USER` u
+							INNER JOIN `annotate_doc` doc ON u.`NAME` = doc.annotateUser
+							GROUP BY
+								u.`NAME`
+				) task
+			GROUP BY
+				username
+		) taskDetails ON u.`NAME` = taskDetails.username
+		GROUP BY
+			u.`NAME` ORDER BY u.`CREATEDATE` DESC
+		<if test="startNum != null">
+			LIMIT #{startNum}, #{limit}
+		</if>
+	</select>
+	-->
+	<select id="findAnnotateDetails" parameterType="com.gooseeker.fss.entity.vo.UserAnnotateDetailsVo" statementType="CALLABLE">
+		{CALL annotatedetails(#{userName, mode=IN, jdbcType=VARCHAR},
+					#{tagResultNum, mode=OUT, jdbcType=INTEGER},
+					#{tagTaskNum, mode=OUT, jdbcType=INTEGER},
+					#{checkTaskNum, mode=OUT, jdbcType=INTEGER},
+					#{roles, mode=OUT, jdbcType=VARCHAR})}
+	</select>
+	
+</mapper>

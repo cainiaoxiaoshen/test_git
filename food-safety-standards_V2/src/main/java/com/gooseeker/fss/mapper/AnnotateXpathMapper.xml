@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gooseeker.fss.mapper.AnnotateXpathMapper">
+
+	<sql id="Base_Column_List" >
+		`id` `id`, `docId` `docId`, `product` AS `product`, `factor` AS `factor`,
+		`text` AS `text`, `xpath` AS `xpath`, `start` AS `start`, `length` AS `length`,
+		`type` AS `type`, `index` AS `index`, `updatedText` AS `updatedText`, `updated` AS `updated`
+	</sql>
+	
+	<insert id="insertModel" parameterType="annotateXpath">
+		INSERT INTO `annotate_xpath` (`docId`, `product`, `factor`, `text`, `xpath`, `start`,`length`, `type`, `index`, `updatedText`, `updated`)
+		VALUES (#{docId}, #{product}, #{factor}, #{text}, #{xpath}, #{start}, #{length}, #{type}, #{index}, #{updatedText}, #{updated})
+		ON DUPLICATE KEY UPDATE `text` = #{text}, `xpath` = #{xpath}, `start` = #{start},`length` = #{length},
+		`index` = #{index}, `updatedText` = #{updatedText}, `updated` = #{updated}
+	</insert>
+	
+	<select id="findAnnotateXpath" resultType="com.gooseeker.fss.entity.AnnotateXpath" parameterType="map">
+		SELECT <include refid="Base_Column_List"></include>
+		FROM
+			`annotate_xpath`
+		WHERE
+			`docId` = #{docId}
+			AND `product` = #{product}
+			AND `factor` = #{factor}
+	</select>
+	
+	<delete id="deleteByUniqueKey" parameterType="map">
+		DELETE FROM
+			`annotate_xpath`
+		WHERE
+			`docId` = #{docId}
+			AND `product` = #{product}
+			AND `factor` = #{factor}
+	</delete>
+	
+</mapper>

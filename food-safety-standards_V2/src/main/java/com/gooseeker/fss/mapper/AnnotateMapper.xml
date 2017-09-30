@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gooseeker.fss.mapper.AnnotateMapper">
+
+	<sql id="Base_Column_List">
+		`annotate`.`id` AS `id`, `annotate`.`docId` AS `docId`, `annotate`.`product` AS `product`, `annotate`.`factor` AS `factor`,
+		`annotate`.`max` AS `max`, `annotate`.`min` AS `min`, `annotate`.`unit` AS `unit`, `annotate`.`adi` AS `adi`, `annotate`.`adiWeb` AS `adiWeb`,
+		`annotate`.`cns` AS `cns`, `annotate`.`ins` AS `ins`, `annotate`.`cas` AS `cas`, `annotate`.`struc` AS `struc`, `annotate`.`mole` AS `mole`,
+		`annotate`.`property` AS `property`, `annotate`.`toxico` AS `toxico`, `annotate`.`biological` AS `biological`, `annotate`.`funct` AS `funct`,
+		`annotate`.`disease` AS `disease`, `annotate`.`proremark` AS `proremark`, `annotate`.`facremark` AS `facremark`, `annotate`.`createDate` AS `createDate`,
+		`annotate`.`user` AS `user`, `annotate`.`page` AS `page`, `annotate`.`testsId` AS `testsId`, `annotate`.`prostd` AS `prostd`
+	</sql>
+	
+	<delete id="deleteByPrimaryKey" parameterType="long">
+		DELETE FROM `annotate` WHERE `id` = #{id}
+	</delete>
+	
+	<select id="selectByPrimaryKey" resultType="annotate" parameterType="long">
+		SELECT
+			<include refid="Base_Column_List"></include>
+		FROM
+			`annotate`
+			WHERE `id` = #{id}
+	</select>
+	
+	<insert id="saveOrUpdate" parameterType="annotate">
+		<selectKey resultType="long" keyProperty="id" order="AFTER">
+			SELECT @@IDENTITY AS id
+		</selectKey>
+		INSERT INTO `annotate`
+		(
+			`docId`, `product`, `factor`, `max`, `min`, `unit`, `adi`, `adiWeb`,
+			`cns`, `ins`, `cas`, `struc`, `mole`, `property`, `toxico`, `biological`, 
+			`funct`, `disease`, `proremark`, `facremark`, `createDate`, `user`, `page`, `testsId`, `prostd`) VALUES
+			(#{docId}, #{product}, #{factor}, #{max}, #{min}, #{unit}, #{adi},
+			#{adiWeb}, #{cns}, #{ins}, #{cas}, #{struc}, #{mole}, #{property},
+			#{toxico}, #{biological}, #{funct}, #{disease}, #{proremark},
+			#{facremark}, #{createDate}, #{user}, #{page}, #{testsId}, #{prostd}
+		)
+		ON DUPLICATE KEY UPDATE
+			<trim suffixOverrides=",">
+				<if test="max != null">
+					`max` = #{max},
+				</if>
+				<if test="min != null">
+					`min` = #{min},
+				</if>
+				<if test="unit != null">
+					`unit` = #{unit},
+				</if>
+				<if test="adi != null">
+					`adi` = #{adi},
+				</if>
+				<if test="adiWeb != null">
+					`adiWeb` = #{adiWeb},
+				</if>
+				<if test="cns != null">
+					`cns` = #{cns},
+				</if>
+				<if test="ins != null">
+					`ins` = #{ins},
+				</if>
+				<if test="cas != null">
+					`cas` = #{cas},
+				</if>
+				<if test="struc != null">
+					`struc` = #{struc},
+				</if>
+				<if test="mole != null">
+					 `mole` = #{mole},
+				</if>
+				<if test="property != null">
+					`property` = #{property},
+				</if>
+				<if test="toxico != null">
+					`toxico` = #{toxico},
+				</if>
+				<if test="biological != null">
+					`biological` = #{biological},
+				</if>
+				<if test="funct != null">
+					`funct` = #{funct},
+				</if>
+				<if test="disease != null">
+					`disease` = #{disease},
+				</if>
+				<if test="proremark != null">
+					`proremark` = #{proremark},
+				</if>
+				<if test="facremark != null">
+					`facremark` = #{facremark},
+				</if>
+				<if test="page != null">
+					`page` = #{page},
+				</if>
+				<if test="testsId != null">
+					`testsId` = #{testsId},
+				</if>
+				<if test="prostd != null">
+					`prostd` = #{prostd},
+				</if>
+			</trim>
+	</insert>
+	
+	<update id="update" parameterType="annotate">
+		UPDATE `annotate` SET 
+		<if test="docId != null">
+			`docId` = #{docId}
+		</if>
+		<if test="product != null">
+			, `product` = #{product}
+		</if>
+		<if test="factor != null">
+			, `factor` = #{factor}
+		</if>
+		<if test="max != null">
+			, `max` = #{max}
+		</if>
+		<if test="min != null">
+			, `min` = #{min}
+		</if>
+		<if test="unit != null">
+			, `unit` = #{unit}
+		</if>
+		<if test="adi != null">
+			, `adi` = #{adi}
+		</if>
+		<if test="adiWeb != null">
+			, `adiWeb` = #{adiWeb}
+		</if>
+		<if test="cns != null">
+			, `cns` = #{cns}
+		</if>
+		<if test="ins != null">
+			, `ins` = #{ins}
+		</if>
+		<if test="cas != null">
+			, `cas` = #{cas}
+		</if>
+		<if test="struc != null">
+			, `struc` = #{struc}
+		</if>
+		<if test="mole != null">
+			, `mole` = #{mole}
+		</if>
+		<if test="property != null">
+			, `property` = #{property}
+		</if>
+		<if test="toxico != null">
+			,`toxico` = #{toxico}
+		</if>
+		<if test="biological != null">
+			, `biological` = #{biological}
+		</if>
+		<if test="funct != null">
+			, `funct` = #{funct}
+		</if>
+		<if test="disease != null">
+			, `disease` = #{disease}
+		</if>
+		<if test="proremark != null">
+			, `proremark` = #{proremark}
+		</if>
+		<if test="facremark != null">
+			, `facremark` = #{facremark}
+		</if>
+		<if test="createDate != null">
+			, `createDate` = #{createDate}
+		</if>
+		<if test="user != null">
+			, `user` = #{user}
+		</if>
+		<if test="page != null">
+			, `page` = #{page}
+		</if>
+		<if test="testsId != null">
+			, `testsId` = #{testsId}
+		</if>
+		<if test="prostd != null">
+			, `prostd` = #{prostd}
+		</if>
+		WHERE `id` = #{id}
+	</update>
+	
+	<select id="selectByWhereSql" parameterType="map" resultType="annotate">
+		SELECT <include refid="Base_Column_List"></include> FROM `annotate` ${whereSql} ${orderBySql}
+	</select>
+	
+	
+	<select id="selectAnnotateDetailsByWhereSql" parameterType="map" resultType="com.gooseeker.fss.entity.vo.FactorsDetailsVo">
+		SELECT
+			antDoc.`country` country, antDoc.`type`, <include refid="Base_Column_List"></include>
+		FROM
+			`annotate` INNER JOIN annotate_doc antDoc ON `annotate`.`docId` = antDoc.`id`
+		${whereSql} ${orderBySql}
+	</select>
+	
+	<select id="findByDocIdForExport" parameterType="long" resultType="com.gooseeker.fss.entity.vo.ExcelAnnotateVo">
+		SELECT <include refid="Base_Column_List"></include>
+		FROM `annotate`
+		WHERE `docId` = #{docId}
+		ORDER BY `createDate` DESC
+		
+	</select>
+
+	<select id="findAnnotateAndXpathByDocId" parameterType="long" resultMap="findAnnotateByDocIdResultMap">
+		SELECT <include refid="Base_Column_List"></include>
+		FROM `annotate`
+		WHERE `docId` = #{docId}
+		ORDER BY `page` ASC
+		
+	</select>
+
+	<resultMap type="annotate" id="findAnnotateByDocIdResultMap">
+		<id column="id" property="id" />
+		<result column="docId" property="docId" />
+		<result column="product" property="product" />
+		<result column="factor" property="factor" />
+		<result column="max" property="max" />
+		<result column="min" property="min" />
+		<result column="unit" property="unit" />
+		<result column="adi" property="adi" />
+		<result column="adiWeb" property="adiWeb" />
+
+		<result column="cns" property="cns" />
+		<result column="ins" property="ins" />
+		<result column="cas" property="cas" />
+		<result column="struc" property="struc" />
+		<result column="mole" property="mole" />
+		<result column="property" property="property" />
+		<result column="toxico" property="toxico" />
+		<result column="biological" property="biological" />
+		<result column="funct" property="funct" />
+		<result column="disease" property="disease" />
+
+		<result column="proremark" property="proremark" />
+		<result column="facremark" property="facremark" />
+		<result column="createDate" property="createDate" />
+		<result column="user" property="user" />
+		<result column="page" property="page" />
+		<result column="testsId" property="testsId" />
+		<result column="prostd" property="prostd" />
+
+		<collection property="annotateXpaths"
+			ofType="com.gooseeker.fss.entity.AnnotateXpath" column="{docId=docId,product=product,factor=factor}"
+			select="com.gooseeker.fss.mapper.AnnotateXpathMapper.findAnnotateXpath"></collection>
+
+	</resultMap>
+	
+	<delete id="deleteByUniqueKey" parameterType="map">
+		DELETE FROM `annotate` WHERE `docId` = #{docId} AND `product` = #{product} AND `factor` = #{factor}
+	</delete>
+	
+	<delete id="deleteByIds">
+		DELETE FROM `annotate` WHERE `docId` IN
+		<foreach collection="array" item="id" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+	<select id="updateAnnotateProperty" parameterType="map" resultType="int">
+		CALL updateannotate(#{antId}, #{type}, #{text}, #{docId}, #{user}, #{grade}, #{flag});
+	</select>
+	
+</mapper>

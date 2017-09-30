@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gooseeker.fss.mapper.PageIncludeMapper">
+	
+	
+	<delete id="deleteByPrimaryKey" parameterType="long">
+		DELETE FROM `pageinclude` WHERE `id` = #{id}
+	</delete>
+	
+	<select id="selectByPrimaryKey" parameterType="long" resultType="pageInclude">
+		SELECT 
+			`id` id, `docNo` docNo, `includes` includes, `page` page 
+		FROM 
+			`pageinclude`
+		WHERE `id` = #{id}
+	</select>
+	
+	<insert id="saveOrUpdate" parameterType="pageInclude">
+		INSERT INTO `pageinclude`(`docNo`, `includes`, `page`) VALUES(#{docNo}, #{includes}, #{page})
+		ON DUPLICATE KEY UPDATE `includes` = CONCAT(`includes`, #{includes})
+	</insert>
+	
+		<!-- 如果想要这样一次执行多条sql语句则需要在
+		jdbc.url=jdbc:mysql://localhost/fss?useUnicode=true&autoReconnect=true&allowMultiQueries=true&characterEncoding=UTF-8
+		中配置allowMultiQueries=true
+	 -->
+	<insert id="saveOrUpdates" parameterType="list">
+		<foreach collection="list" item="item" separator=";">
+			INSERT INTO `pageinclude`(`docNo`, `includes`, `page`) VALUES(#{item.docNo}, #{item.includes}, #{item.page})
+			ON DUPLICATE KEY UPDATE `includes` = CONCAT(`includes`, #{item.includes})
+		</foreach>
+	</insert>
+	
+	<update id="update" parameterType="pageInclude">
+		UPDATE `pageinclude`
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="docNo != null">
+				`docNo` = #{docNo}
+			</if>
+			<if test="includes != null">
+				`includes` = #{includes}
+			</if>
+			<if test="page != null">
+				`page` = #{page}
+			</if>
+		</trim>
+		WHERE `id` = #{id}
+	</update>
+	
+	<select id="selectByWhereSql" parameterType="map" resultType="pageInclude">
+		SELECT 
+			`id` id, `docNo` docNo, `includes` includes, `page` page 
+		FROM 
+			`pageinclude` 
+		${whereSql} ${orderBySql}
+	</select>
+	
+	<select id="findPageIncludesByDocNoAndPage" parameterType="map" resultType="pageInclude">
+		SELECT 
+			`id` id, `docNo` docNo, `includes` includes, `page` page 
+		FROM 
+			`pageinclude` 
+		WHERE `docNo` = #{docNo} AND `page` = #{page}
+	</select>
+</mapper>

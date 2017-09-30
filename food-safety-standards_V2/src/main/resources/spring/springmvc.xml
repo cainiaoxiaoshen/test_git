@@ -1,0 +1,71 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-4.0.xsd 
+		http://www.springframework.org/schema/mvc 
+		http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd 
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-4.0.xsd 
+		http://www.springframework.org/schema/aop 
+		http://www.springframework.org/schema/aop/spring-aop-4.0.xsd 
+		http://www.springframework.org/schema/tx 
+		http://www.springframework.org/schema/tx/spring-tx-4.0.xsd ">
+
+
+	<context:component-scan
+		base-package="com.gooseeker.fss.plugin.controller,
+					com.gooseeker.fss.controller,
+					com.gooseeker.fss.service.impl,
+					com.gooseeker.fss.commons.generic.service.impl">
+	</context:component-scan>
+	<mvc:annotation-driven content-negotiation-manager="contentNegotiationManager"></mvc:annotation-driven>
+	
+	<!-- 配置content-negotiation-manager="contentNegotiationManager" 是因为请求的后缀是.html -->
+	<bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+		<property name="favorPathExtension" value="false" />
+		<property name="favorParameter" value="false" />
+		<property name="ignoreAcceptHeader" value="false" />
+		<property name="defaultContentType" value="text/html"/>  
+		<property name="mediaTypes">
+			<value>
+				json=application/json
+				xml=application/xml
+				html=text/html
+			</value>
+		</property>
+	</bean>
+
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<!-- 配置jsp路径的前缀 -->
+		<property name="prefix" value="/WEB-INF/pages/" />
+		<!-- 配置jsp路径的后缀 -->
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+	<bean class="com.gooseeker.fss.commons.exception.FssViewExceptionResolver"></bean>
+
+	<!--拦截器 -->
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<!-- /**表示所有url包括子url路径 -->
+			<mvc:mapping path="/standards/**" />
+			<bean
+				class="com.gooseeker.fss.commons.interceptor.AuthorityHandlerInterceptor"></bean>
+		</mvc:interceptor>
+	</mvc:interceptors>
+
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize">
+			<value>10000000</value>
+		</property>
+		<property name="defaultEncoding" value="utf8" />
+	</bean>
+	
+	<mvc:view-controller path="/noPermission.html" view-name="noPermission"/>
+	<mvc:view-controller path="/relogin.html" view-name="relogin"/>
+	
+</beans>

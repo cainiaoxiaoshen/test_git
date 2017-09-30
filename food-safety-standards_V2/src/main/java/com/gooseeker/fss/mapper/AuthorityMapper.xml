@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gooseeker.fss.mapper.AuthorityMapper">
+	
+	<delete id="deleteByPrimaryKey" parameterType="long">
+		DELETE FROM `AUTHORITY` WHERE `AUTHORITY_ID` = #{id}
+	</delete>
+	
+	<select id="selectByPrimaryKey" parameterType="long" resultType="authority">
+		SELECT `AUTHORITY_ID` id, `USER_ID` uid, `ROLE` role
+		FROM `AUTHORITY` WHERE `AUTHORITY_ID` = #{id}
+	</select>
+	
+	<insert id="saveOrUpdate" parameterType="authority">
+		INSERT INTO `AUTHORITY` (`USER_ID`, `ROLE`) VALUES (#{uid}, #{role})
+		ON DUPLICATE KEY UPDATE
+		<trim suffixOverrides=",">
+			<if test="uid != null">
+				`USER_ID` = #{uid},
+			</if>
+			<if test="role != null">
+				`ROLE` = #{role},
+			</if>
+		</trim>
+	</insert>
+	
+	<update id="update" parameterType="authority">
+		UPDATE `AUTHORITY` 
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="role != null">
+				`ROLE` = #{role},
+			</if>
+			<if test="uid != null">
+				`USER_ID` = #{uid},
+			</if>
+		</trim>
+		WHERE `AUTHORITY_ID` = #{id} 
+	</update>
+	
+	<select id="selectByWhereSql" parameterType="map" resultType="authority">
+		SELECT `AUTHORITY_ID` id, `USER_ID` uid, `ROLE` role FROM `AUTHORITY` ${whereSql} ${orderBySql}
+	</select>
+	
+	<delete id="deleteAuthorityByUid" parameterType="long">
+		DELETE FROM `AUTHORITY` WHERE `USER_ID` = #{id}
+	</delete>
+	
+</mapper>

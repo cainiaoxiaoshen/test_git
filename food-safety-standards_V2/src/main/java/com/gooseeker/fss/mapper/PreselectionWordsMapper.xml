@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gooseeker.fss.mapper.PreselectionWordsMapper">
+	
+	
+	<delete id="deleteByPrimaryKey" parameterType="long">
+		DELETE FROM `preselection_words` WHERE `id` = #{id}
+	</delete>
+	
+	<select id="selectByPrimaryKey" parameterType="long" resultType="preselectionWords">
+		SELECT 
+			`id` id, `word` word, `state` state, `frequency` frequency 
+		FROM 
+			`preselection_words`
+		WHERE `id` = #{id}
+	</select>
+	
+	<insert id="saveOrupdate" parameterType="preselectionWords">
+		INSERT INTO `preselection_words`(`word`, `state`, `frequency`) 
+		VALUES (#{word}, #{state}, #{frequency})
+		ON DUPLICATE KEY UPDATE `frequency` = `frequency` + 1
+		<trim prefixOverrides=",">
+			<if test="state != null">
+				, `state` = #{state}
+			</if>
+		</trim>
+	</insert>
+	
+	<update id="update" parameterType="preselectionWords">
+		UPDATE `preselection_words`
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="word != null">
+				`word` = #{word},
+			</if>
+			<if test="state != null">
+				`state` = #{state},
+			</if>
+			<if test="frequency != null">
+				`frequency` = #{frequency},
+			</if>
+		</trim>
+		WHERE `id` = #{id}
+	</update>
+	
+	<select id="selectByWhereSql" parameterType="map" resultType="preselectionWords">
+		SELECT 
+			`id` id, `word` word, `state` state, `frequency` frequency 
+		FROM 
+			`preselection_words`
+		${whereSql} ${orderBySql}
+	</select>
+	
+	<insert id="insertPreselectionWords" parameterType="list">
+		<foreach collection="list" item="item" separator=";" >
+			INSERT INTO `preselection_words`(`word`, `state`, `frequency`) VALUES
+			(#{item.word}, #{item.state}, #{item.frequency})
+			ON DUPLICATE KEY UPDATE `frequency` = `frequency` + 1
+			<trim prefixOverrides=",">
+				<if test="item.state != null">
+					, `state` = #{item.state}
+				</if>
+			</trim>
+		</foreach>
+	</insert>
+	
+	<update id="updateStateByIds" parameterType="map">
+		UPDATE `preselection_words` SET `state` = #{state} WHERE `id` IN
+		<foreach collection="array" item="id" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</update>
+	
+	<update id="updateStateByWords" parameterType="map">
+		UPDATE `preselection_words` SET `state` = #{state} WHERE `word` IN
+		<foreach collection="array" item="word" open="(" close=")" separator=",">
+			#{word}
+		</foreach>
+	</update>
+	
+</mapper>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gooseeker.fss.mapper.DocReplaceMapper">
+	<!-- 查询代替关系记录 -->
+	<select id="findAllDocReplace" parameterType="map" resultType="docReplace">
+		SELECT id,newDoc, oldDoc, createTime, relation, remark
+		FROM doc_replace
+		WHERE isDel = 0
+		ORDER BY `createTime` DESC
+		LIMIT #{startNum}, #{limit}
+	</select>
+	
+	<!-- 插入 -->
+	<insert id="insertDocReplace" parameterType="map">
+	INSERT INTO doc_replace(`createUser`,`createTime`,`newDoc`,`oldDoc`,`relation`,`remark`) 
+	VALUE(#{createUser},#{createTime},#{newDoc},#{oldDoc},#{relation},#{remark})
+	</insert>
+	<insert id="addDocReplace" parameterType="map">
+		INSERT INTO doc_replace(`createUser`,`createTime`,`newDoc`,`oldDoc`,`relation`,`remark`) 
+		VALUE(#{createUser},#{createTime},#{newDoc},#{oldDoc},#{relation},#{remark})
+	</insert>
+	<select id="selectDocReplaceByDocId" resultType="docReplace">
+		SELECT newDoc, oldDoc, relation FROM doc_replace WHERE id = #{id}
+	</select>
+	
+	<!-- 根据docNo查询可用的代替关系记录 -->
+	<select id="selectDocReplaceByDocNo" parameterType="map" resultType="docReplace">
+		SELECT id, newDoc, oldDoc, relation, remark, createTime
+		FROM doc_replace
+		WHERE isDel = 1 
+		AND
+		(
+			newDoc = #{docNo} OR oldDoc = #{docNo} OR newDoc = #{oldDocNo} OR oldDoc = #{oldDocNo}
+		)
+		UNION
+		SELECT
+			id,
+			newDoc,
+			oldDoc,
+			relation,
+			remark,
+			createTime
+		FROM
+			doc_replace
+		WHERE
+			isDel = 0
+		AND newDoc = #{docNo}
+		AND oldDoc = #{oldDocNo}
+		ORDER BY `createTime` DESC
+		LIMIT #{startNum }, #{limit }
+	</select>
+	
+	<select id="findDocReplacesBydocNo" parameterType="String" resultType="docReplace">
+		SELECT id, newDoc, oldDoc, relation, remark, createTime
+		FROM doc_replace
+		WHERE isDel = 0 AND newDoc = #{docNo} 
+		ORDER BY `createTime` DESC
+	</select>
+	
+	<select id="selectDocReplaceByOldDocNo" parameterType="String" resultType="docReplace">
+		SELECT id, newDoc, oldDoc, relation, remark, createTime
+		FROM doc_replace
+		WHERE isDel = 0 AND oldDoc = #{docNo} ORDER BY createTime DESC
+	</select>
+	
+	<select id="selectByPrimaryKey" parameterType="long" resultType="docReplace">
+		SELECT id, newDoc, oldDoc, relation, remark, createTime
+		FROM doc_replace
+		WHERE isDel = 0 AND id = #{id}
+	</select>
+	
+	<!-- 查询doc_replace表中可用的代替关系记录个数 -->
+	<select id="getTotalCount" resultType="int">
+		SELECT COUNT(*) FROM `doc_replace` WHERE `isDel` = 0
+	</select>
+	
+	<select id="getTotalCountByDocNo" resultType="int" parameterType="map">
+		SELECT COUNT(*)
+		FROM doc_replace
+		WHERE isDel = 1 
+		AND
+		(
+			newDoc = #{docNo} OR oldDoc = #{docNo} OR newDoc = #{oldDocNo} OR oldDoc = #{oldDocNo}
+		)
+	</select>
+	
+	<update id="updateDocReplace" parameterType="map">
+		UPDATE doc_replace SET modiUser = #{modiUser}, modiTime = #{modiTime}, isDel = 1
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateDocReplaceModel" parameterType="map">
+		UPDATE doc_replace SET `createUser` = #{createUser},`createTime` = #{createTime},
+		`newDoc` = #{newDoc},`oldDoc` = #{oldDoc},`relation` = #{relation},`remark` = #{remark}
+		isDel = #{isDel}
+		WHERE `id` = #{id}
+	</update>
+	
+	<update id="updateDocReplaceDelStatus" parameterType="map">
+		UPDATE doc_replace SET
+		isDel = #{isDel}
+		WHERE `id` = #{id}
+	</update>
+	
+</mapper>

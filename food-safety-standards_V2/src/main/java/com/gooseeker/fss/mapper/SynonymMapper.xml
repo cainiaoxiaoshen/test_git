@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gooseeker.fss.mapper.SynonymMapper">
+	<!-- 查询所有可用记录 -->
+	<select id="findAllSynonym" parameterType="map" resultType="synonym">
+		SELECT id,createUser,createTime,mainWord,synWord 
+		FROM synonym 
+		WHERE isDel = 0 
+		ORDER BY `createTime` DESC
+		LIMIT #{startNum}, #{limit}
+	</select>
+	<!-- 查询可用记录总数 -->
+	<select id="getTotalCount" resultType="int">
+		SELECT COUNT(*) FROM `synonym` WHERE `isDel` = 0
+	</select>
+	
+	<insert id="insertSynonym" parameterType="synonym">
+		INSERT INTO synonym(createUser,createTime,mainWord,synWord) 
+		VALUE(#{createUser},#{createTime},#{mainWord},#{synWord})
+	</insert>
+	
+	<update id="deleteSynonym" parameterType="long">
+		UPDATE synonym SET isDel = 1 WHERE id = #{id}
+	</update>
+	
+	<update id="updateSynonym" parameterType="map">
+		UPDATE synonym SET mainWord = #{mainWord}, synWord = #{synWord} WHERE id = #{id}
+	</update>
+	
+	
+</mapper>
